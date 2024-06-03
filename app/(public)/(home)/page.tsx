@@ -5,14 +5,16 @@ import bgImage from "@/public/bg.png";
 export default function HomePage() {
   return (
     <div className=" mt-24 ">
-      <Image
-        src={bgImage}
-        fill
-        placeholder="blur"
-        quality={100}
-        className="object-cover object-top"
-        alt="Mountains and forests with two cabins"
-      />
+      <div className="absolute inset-0">
+        <Image
+          src={bgImage}
+          fill
+          placeholder="blur"
+          quality={100}
+          className="object-cover object-top"
+          alt="Mountains and forests with two cabins"
+        />
+      </div>
 
       <div className="relative z-10 text-center">
         <h1 className="text-clamp-h1 mb-10 font-normal tracking-tight text-primary-50 ">
