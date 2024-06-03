@@ -53,6 +53,7 @@ export const getCabins = async function () {
   return data;
 };
 
+/*
 // Guests are uniquely identified by their email address
 export async function getGuest(email: string) {
   const { data } = await supabase
@@ -64,7 +65,7 @@ export async function getGuest(email: string) {
   // No error here! We handle the possibility of no guest in the sign in callback
   return data;
 }
-
+*/
 export async function getBooking(id: number) {
   const { data, error } = await supabase
     .from("bookings")
@@ -103,7 +104,7 @@ export async function getBookedDatesByCabinId(cabinId: number) {
   today.setUTCHours(0, 0, 0, 0);
   const todayString = today.toISOString();
 
-  // Getting all bookings
+   
   const { data, error } = await supabase
     .from("bookings")
     .select("*")
@@ -159,16 +160,7 @@ export async function getCountries() {
 /// //////////
 // CREATE
 
-export async function createGuest(newGuest: any) {
-  const { data, error } = await supabase.from("guests").insert([newGuest]);
 
-  if (error) {
-    console.error(error);
-    throw new Error("Guest could not be created");
-  }
-
-  return data;
-}
 
 export async function createBooking(newBooking: any) {
   const { data, error } = await supabase

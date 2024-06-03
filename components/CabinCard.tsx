@@ -3,25 +3,26 @@ import { UsersIcon } from "@heroicons/react/24/solid";
 import Image from "next/image";
 import Link from "next/link";
 
-interface CabinProps {
+type CabinProps = {
   cabin: Cabin;
-}
+};
 
 function CabinCard({ cabin }: CabinProps) {
   const { id, name, maxCapacity, regularPrice, discount, image } = cabin;
 
   return (
-    <div className="flex border border-primary-800">
-      <div className="relative flex-1">
+    <div className="flex flex-col overflow-hidden border border-primary-800 sm:flex-row">
+      <div className="relative aspect-square sm:w-1/2">
         <Image
           fill
           src={image}
           alt={`Cabin ${name}`}
-          className="flex-1 border-r border-primary-800 object-cover"
+          sizes="100vw"
+          className=" border-r border-primary-800 object-cover"
         />
       </div>
 
-      <div className="grow">
+      <div className="flex flex-1 flex-col justify-between">
         <div className="bg-primary-950 px-7 pb-4 pt-5">
           <h3 className="mb-3 text-2xl font-semibold text-accent-500">
             Cabin {name}
@@ -34,7 +35,7 @@ function CabinCard({ cabin }: CabinProps) {
             </p>
           </div>
 
-          <p className="flex items-baseline justify-end gap-3">
+          <p className="flex items-baseline justify-end gap-3 whitespace-nowrap">
             {discount > 0 ? (
               <>
                 <span className="text-3xl font-[350]">
@@ -51,10 +52,10 @@ function CabinCard({ cabin }: CabinProps) {
           </p>
         </div>
 
-        <div className="border-t border-t-primary-800 bg-primary-950 text-right">
+        <div className=" border-t border-t-primary-800 bg-primary-950 text-right">
           <Link
             href={`/cabins/${id}`}
-            className="inline-block border-l border-primary-800 px-6 py-4 transition-all hover:bg-accent-600 hover:text-primary-900"
+            className=" inline-block whitespace-nowrap border border-primary-800 px-6 py-4 transition-all hover:bg-accent-600 hover:text-primary-900"
           >
             Details & reservation &rarr;
           </Link>

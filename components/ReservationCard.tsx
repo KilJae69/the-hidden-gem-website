@@ -3,33 +3,20 @@ import { format, formatDistance, isPast, isToday, parseISO } from "date-fns";
 import DeleteReservation from "./DeleteReservation";
 import Image from "next/image";
 import Link from "next/link";
+import { Booking } from "@/types/shared";
 
 export const formatDistanceFromNow = (dateStr: string) =>
   formatDistance(parseISO(dateStr), new Date(), {
     addSuffix: true,
   }).replace("about ", "");
 
-interface BookingProps {
-  booking: {
-    id: number;
-    guestId: number;
-    startDate: string;
-    endDate: string;
-    numNights: number;
-    totalPrice: number;
-    numGuests: number;
-    status?: string;
-    created_at: string;
-    cabins: {
-      name: string;
-      image: string;
-    };
-  };
+type BookingProps = {
+  booking: Booking;
 
   onDelete: (bookingId: number) => void;
-}
+};
 
-function ReservationCard({onDelete, booking }: BookingProps) {
+function ReservationCard({ onDelete, booking }: BookingProps) {
   const {
     id,
 
@@ -41,25 +28,19 @@ function ReservationCard({onDelete, booking }: BookingProps) {
 
     // eslint-disable-next-line camelcase
     created_at,
-    cabins: { name, image },
+    cabins,
   } = booking;
 
   return (
-    <div className="flex border border-primary-800">
-      <div className="relative aspect-square h-32">
+    <div className="flex flex-col gap-3 border border-primary-800 pb-3 lg:flex-row lg:pb-0">
+      <div className="relative aspect-video h-32 lg:aspect-square">
         <Image
-          src={image}
-          alt={`Cabin ${name}`}
+          src={cabins.image}
+          alt={`Cabin ${cabins.name}`}
           fill
           className="border-r border-primary-800 object-cover"
         />
-      </div>
-
-      <div className="flex grow flex-col px-6 py-3">
-        <div className="flex items-center justify-between">
-          <h3 className="text-xl font-semibold">
-            {numNights} nights in Cabin {name}
-          </h3>
+        <div className="absolute ">
           {isPast(new Date(startDate)) ? (
             <span className="flex h-7 items-center rounded-sm bg-yellow-800 px-3 text-xs font-bold uppercase text-yellow-200">
               past
@@ -70,33 +51,45 @@ function ReservationCard({onDelete, booking }: BookingProps) {
             </span>
           )}
         </div>
+      </div>
+
+      <div className="flex grow flex-col gap-3 px-6 py-3 lg:gap-0">
+        <div className="flex items-center justify-between">
+          <h3 className="text-xl font-semibold">
+            {numNights} nights in Cabin {cabins.name}
+          </h3>
+        </div>
 
         <p className="text-lg text-primary-300">
           {format(new Date(startDate), "EEE, MMM dd yyyy")} (
           {isToday(new Date(startDate))
             ? "Today"
-            : formatDistanceFromNow(startDate)}
+            : formatDistanceFromNow(String(startDate))}
           ) &mdash; {format(new Date(endDate), "EEE, MMM dd yyyy")}
         </p>
 
-        <div className="mt-auto flex items-baseline gap-5">
-          <p className="text-xl font-semibold text-accent-400">${totalPrice}</p>
-          <p className="text-primary-300">&bull;</p>
-          <p className="text-lg text-primary-300">
-            {numGuests} guest{numGuests > 1 && "s"}
-          </p>
+        <div className="mt-auto flex flex-col items-baseline gap-5 lg:flex-row">
+          <div className="flex gap-3 whitespace-nowrap">
+            <p className="text-xl font-semibold text-accent-400">
+              ${totalPrice}
+            </p>
+            <p className="text-primary-300">&bull;</p>
+            <p className="text-lg text-primary-300">
+              {numGuests} guest{numGuests > 1 && "s"}
+            </p>
+          </div>
           <p className="ml-auto text-sm text-primary-400">
             Booked {format(new Date(created_at), "EEE, MMM dd yyyy, p")}
           </p>
         </div>
       </div>
 
-      <div className="flex w-[100px] flex-col border-l border-primary-800">
+      <div className="mx-auto flex w-[100px] border-primary-800 lg:flex-col lg:border-l">
         {!isPast(startDate) ? (
           <>
             <Link
               href={`/account/reservations/edit/${id}`}
-              className="group flex grow items-center gap-2 border-b border-primary-800 px-3 text-xs font-bold uppercase text-primary-300 transition-colors hover:bg-accent-600 hover:text-primary-900"
+              className="group flex grow items-center gap-2 border-primary-800 px-3 text-xs font-bold uppercase text-primary-300 transition-colors hover:bg-accent-600 hover:text-primary-900 lg:border-b"
             >
               <PencilSquareIcon className="size-5 text-primary-600 transition-colors group-hover:text-primary-800" />
               <span className="mt-1">Edit</span>

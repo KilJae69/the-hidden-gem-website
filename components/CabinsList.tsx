@@ -1,11 +1,11 @@
-
 import CabinCard from "./CabinCard";
-import { CabinsFilterProps } from "@/types";
+
 import { getCabinsAction } from "@/lib/actions/cabin.action";
 
 // import { unstable_noStore as noStore } from "next/cache";
 
-const CabinsList = async ({ filter }: CabinsFilterProps) => {
+const CabinsList = async ({ filter }: { filter: string }) => {
+  
   // noStore();
   const cabins = await getCabinsAction();
 
@@ -28,8 +28,6 @@ const CabinsList = async ({ filter }: CabinsFilterProps) => {
       {displayedCabins?.map((cabin) => (
         <CabinCard cabin={cabin} key={cabin.id} />
       ))}
-
-      
     </div>
   );
 };

@@ -2,15 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
-
 @layer components {
   .spinner {
     margin: 3.2rem auto 1.6rem;
     width: 60px;
     aspect-ratio: 1;
     border-radius: 50%;
-    border: 8px solid theme('colors.primary.900');
-    border-right-color: theme('colors.primary.200');
+    border: 8px solid theme("colors.primary.900");
+    border-right-color: theme("colors.primary.200");
     animation: rotate 1s infinite linear;
   }
 
@@ -19,7 +18,7 @@
     width: 20px;
     aspect-ratio: 1;
     border-radius: 50%;
-    border: 2px solid theme('colors.primary.200');
+    border: 2px solid theme("colors.primary.200");
     border-right-color: transparent;
     animation: rotate 1s infinite linear;
   }
@@ -31,13 +30,51 @@
   }
 }
 
+@layer utilities {
+  .text-clamp-h1 {
+    font-size: clamp(3rem, 8vw, 7rem);
+  }
+
+  .custom-checkbox {
+    @apply min-h-6 min-w-6 appearance-none relative rounded border-2 border-white bg-white outline checked:border-accent-500 checked:bg-accent-500 checked:text-primary-800;
+  }
+
+  .custom-checkbox:checked::after {
+    content: "\2714"; /* Unicode for checkmark */
+    @apply text-white text-center text-lg leading-none absolute inset-0 flex justify-center items-center;
+  }
+
+}
+
+.swiper-pagination .swiper-pagination-bullet {
+  @apply w-3 h-3 rounded-full bg-accent-200;
+}
+
+.swiper-pagination .swiper-pagination-bullet-active {
+  @apply text-accent-600 !important;
+}
 /* For data picker */
-
-
 
 .rdp {
   --rdp-cell-size: 32px !important;
-  --rdp-accent-color: theme('colors.accent.500') !important;
-  --rdp-background-color: theme('colors.accent.600') !important;
+  --rdp-accent-color: theme("colors.accent.500") !important;
+  --rdp-background-color: theme("colors.accent.600") !important;
+  margin: 0 !important;
+}
+
+.rdp-months {
+  display: flex;
+  gap: 1.6rem;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  @media (min-width: 540px) {
+    flex-direction: row;
+    align-items: flex-start;
+  }
+}
+
+.rdp-month {
   margin: 0 !important;
 }

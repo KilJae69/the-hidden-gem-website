@@ -1,18 +1,13 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { auth, signIn, signOut } from "./auth";
+import { auth } from "./auth";
 import { supabase } from "./supabase";
 import { getBookings } from "./data-service";
 
 import { redirect } from "next/navigation";
 
-export async function signInAction() {
-  await signIn("google", { redirectTo: "/account" });
-}
-export async function signOutAction() {
-  await signOut({ redirectTo: "/" });
-}
+
 
 export async function updateGuestAction(formData: any) {
   const session = await auth();
@@ -28,7 +23,7 @@ export async function updateGuestAction(formData: any) {
 
   const updateData = { nationality, countryFlag, nationalID };
 
-  console.log(session);
+
 
   const { error } = await supabase
     .from("guests")

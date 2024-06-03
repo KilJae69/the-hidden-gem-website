@@ -1,4 +1,4 @@
-import Logo from "./Logo";
+import Logo from "./shared/Logo";
 import Navigation from "./Navigation";
 
 function Header() {

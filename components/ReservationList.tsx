@@ -3,9 +3,10 @@
 import { useOptimistic } from "react";
 import ReservationCard from "./ReservationCard"
 import { deleteReservationAction } from "@/lib/actions";
+import { Booking } from "@/types/shared";
 
 interface ReservationListProps {
-    bookings: Array<any>; // Replace 'any' with the appropriate type for bookings
+    bookings: Booking[]; 
 }
 
 const ReservationList = ({bookings}: ReservationListProps) => {

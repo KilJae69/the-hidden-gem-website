@@ -1,55 +1,71 @@
 "use client";
+import { isAlreadyBooked } from "@/lib/utils";
 import useReservationStore from "@/store/reservationsStore";
+import { Cabin, Settings } from "@/types/shared";
+import { differenceInDays, isPast, isSameDay } from "date-fns";
+
 import {
-  differenceInDays,
-  isPast,
-  isSameDay,
-  isWithinInterval,
-} from "date-fns";
-
-import { DayPicker, SelectRangeEventHandler } from "react-day-picker";
+  DateRange,
+  DayPicker,
+  SelectRangeEventHandler,
+} from "react-day-picker";
 import "react-day-picker/dist/style.css";
-
-function isAlreadyBooked(range: any, datesArr: any) {
-  return (
-    range?.from &&
-    range?.to &&
-    datesArr.some((date: any) =>
-      isWithinInterval(date, { start: range.from, end: range.to })
-    )
-  );
-}
+import ReservationDetails from "./ReservationDetails";
 
 interface DateSelectorProps {
-  settings: {
-    minBookingLength: number;
-    maxBookingLength: number;
-  };
-  bookedDates: any;
-  cabin: any;
+  settings: Settings;
+  bookedDates: Date[];
+  cabin: Cabin;
 }
 
 function DateSelector({ settings, bookedDates, cabin }: DateSelectorProps) {
-  const { range, setRange, resetRange } = useReservationStore();
-  // CHANGE
-
-  const displayRange = isAlreadyBooked(range, bookedDates) ? {} : range;
-
-  const { regularPrice, discount } = cabin;
-  const numNights = differenceInDays(displayRange?.to, displayRange?.from);
-  const cabinPrice = numNights * (regularPrice - discount);
+  const {
+    range,
+    setRange,
+    resetRange,
+    numGuests,
+    includeBreakfast,
+    resetForm,
+  } = useReservationStore();
 
   // SETTINGS
-  const { minBookingLength, maxBookingLength } = settings;
+  const { minBookingLength, maxBookingLength, breakfastPrice } = settings;
+
+  const displayRange: DateRange | undefined = isAlreadyBooked(
+    range,
+    bookedDates
+  )
+    ? undefined
+    : range;
+
+  const { regularPrice, discount } = cabin;
+
+  const numNights =
+    displayRange?.from && displayRange?.to
+      ? differenceInDays(displayRange.to, displayRange.from)
+      : 0;
+
+  const totalBreakfastPrice = numNights * numGuests * breakfastPrice;
+  const cabinPrice =
+    numNights * numGuests * (regularPrice - discount) +
+    (includeBreakfast ? totalBreakfastPrice : 0);
 
   const handleSelect: SelectRangeEventHandler = (selectedRange) => {
-    setRange(selectedRange);
+    if (selectedRange?.from && selectedRange?.to) {
+      if (isAlreadyBooked(selectedRange, bookedDates)) {
+        resetRange();
+      } else {
+        setRange(selectedRange);
+      }
+    } else {
+      setRange(selectedRange);
+    }
   };
 
   return (
     <div className="flex flex-col justify-between">
       <DayPicker
-        className="place-self-center pt-12"
+        className="  place-self-center pt-12"
         mode="range"
         onSelect={handleSelect}
         selected={displayRange}
@@ -66,18 +82,22 @@ function DateSelector({ settings, bookedDates, cabin }: DateSelectorProps) {
         }
       />
 
-      <div className="flex h-[72px] items-center justify-between bg-accent-500 px-8 text-primary-800">
-        <div className="flex items-baseline gap-6">
+      <ReservationDetails discount={discount} regularPrice={regularPrice} numGuests={numGuests} numNights={numNights} includeBreakfast={includeBreakfast} totalBreakfastPrice={totalBreakfastPrice} cabinPrice={cabinPrice} range={range} resetForm={resetForm}/>
+
+     {/* <div className="mt-10 flex items-center justify-between bg-accent-500 px-8 text-primary-800">
+        <div className="flex flex-col items-baseline gap-6">
           <p className="flex items-baseline gap-2">
             {discount > 0 ? (
               <>
-                <span className="text-2xl">${regularPrice - discount}</span>
+                <span className="text-2xl">
+                  ${(regularPrice - discount) * numGuests}
+                </span>
                 <span className="font-semibold text-primary-700 line-through">
-                  ${regularPrice}
+                  ${regularPrice * numGuests}
                 </span>
               </>
             ) : (
-              <span className="text-2xl">${regularPrice}</span>
+              <span className="text-2xl">${regularPrice * numGuests}</span>
             )}
             <span className="">/night</span>
           </p>
@@ -86,6 +106,13 @@ function DateSelector({ settings, bookedDates, cabin }: DateSelectorProps) {
               <p className="bg-accent-600 px-3 py-2 text-2xl">
                 <span>&times;</span> <span>{numNights}</span>
               </p>
+
+              {includeBreakfast ? (
+                <p className="bg-accent-600 px-3 py-2 text-xl">
+                  <span>+ Breakfast</span> <span>${totalBreakfastPrice}</span>
+                </p>
+              ) : null}
+
               <p>
                 <span className="text-lg font-bold uppercase">Total</span>{" "}
                 <span className="text-2xl font-semibold">${cabinPrice}</span>
@@ -97,12 +124,12 @@ function DateSelector({ settings, bookedDates, cabin }: DateSelectorProps) {
         {range?.from || range?.to ? (
           <button
             className="border border-primary-800 px-4 py-2 text-sm font-semibold"
-            onClick={resetRange}
+            onClick={resetForm}
           >
             Clear
           </button>
         ) : null}
-      </div>
+      </div> */}
     </div>
   );
 }

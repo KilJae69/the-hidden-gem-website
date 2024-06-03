@@ -1,10 +1,13 @@
 import { EyeSlashIcon, MapPinIcon, UsersIcon } from "@heroicons/react/24/solid";
-import Image from "next/image";
+
 import TextExpander from "./TextExpander";
+
+import CabinImages from "./CabinImages";
 
 
 interface CabinProps {
   cabin: {
+    id: number;
     name: string;
     maxCapacity: number;
     image: string;
@@ -12,21 +15,17 @@ interface CabinProps {
   };
 }
 
-const Cabin = ({ cabin }: CabinProps) => {
-  const { name, maxCapacity, image, description } = cabin;
-  return (
-    <div className="mb-24 grid grid-cols-[3fr_4fr] gap-20 border border-primary-800 px-10 py-3">
-      <div className="relative -translate-x-3 scale-[1.15]">
-        <Image
-          src={image}
-          fill
-          alt={`Cabin ${name}`}
-          className="object-cover"
-        />
-      </div>
+const Cabin = async ({ cabin }: CabinProps) => {
+  const { name, maxCapacity, description } = cabin;
 
-      <div>
-        <h3 className="mb-5 w-[150%] translate-x-[-254px] bg-primary-950 p-6 pb-1 text-7xl font-black text-accent-100">
+  return (
+    <div className="relative mb-24 flex flex-col border border-primary-800 p-3 lg:flex-row lg:gap-20">
+      
+        <CabinImages cabinName={cabin.name} />
+     
+
+      <div className="pt-10 lg:pt-0">
+        <h3 className="z-10 mb-5 whitespace-nowrap bg-primary-950 p-6 pb-1 text-3xl font-black text-accent-100 xs:text-5xl lg:relative lg:left-[-200px]">
           Cabin {name}
         </h3>
 

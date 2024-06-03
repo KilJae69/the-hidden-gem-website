@@ -1,9 +1,10 @@
-import { getBookedDatesByCabinId, getSettings } from "@/lib/data-service";
 import DateSelector from "./DateSelector";
-import ReservationForm from "./ReservationForm";
+import ReservationForm from "./forms/ReservationForm";
 import { auth } from "@/lib/auth";
 import LoginMessage from "./LoginMessage";
 import { Cabin } from "@/types/shared";
+import { getBookedDatesByCabinIdAction } from "@/lib/actions/booking.action";
+import { getSettingsAction } from "@/lib/actions/settings.action";
 
 interface CabinProps {
   cabin: Cabin;
@@ -11,12 +12,11 @@ interface CabinProps {
 
 const Reservation = async ({ cabin }: CabinProps) => {
   const [settings, bookedDates] = await Promise.all([
-    getSettings(),
-    getBookedDatesByCabinId(cabin.id),
+    getSettingsAction(),
+    getBookedDatesByCabinIdAction(cabin.id),
   ]);
 
   const session = await auth();
-  console.log("Session log",session);
 
   return (
     <div className="grid min-h-[400px] grid-cols-1 border border-primary-800 lg:grid-cols-2">
@@ -26,7 +26,11 @@ const Reservation = async ({ cabin }: CabinProps) => {
         cabin={cabin}
       />
       {session?.user ? (
-        <ReservationForm user={session.user} cabin={cabin} />
+        <ReservationForm
+          user={session.user}
+          cabin={cabin}
+          breakfastPrice={settings.breakfastPrice}
+        />
       ) : (
         <LoginMessage />
       )}

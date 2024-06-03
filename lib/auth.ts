@@ -1,33 +1,48 @@
-import NextAuth from "next-auth";
+import NextAuth, { NextAuthConfig } from "next-auth";
 import Google from "next-auth/providers/google";
-import { createGuest, getGuest } from "./data-service";
 
-const authConfig = {
+import github from "next-auth/providers/github";
+import { CreateGuestAction, getGuestAction } from "./actions/guest.action";
+
+const authConfig: NextAuthConfig = {
   providers: [
     Google({
       clientId: process.env.AUTH_GOOGLE_ID,
       clientSecret: process.env.AUTH_GOOGLE_SECRET,
     }),
+    github({
+      clientId: process.env.AUTH_GITHUB_ID,
+      clientSecret: process.env.AUTH_GITHUB_SECRET,
+    }),
   ],
   callbacks: {
-    authorized({ auth, request }) {
+    authorized({ auth }) {
       return !!auth?.user;
     },
-    async signIn({ user, account, profile }) {
+    async signIn({ user }) {
       try {
-        const existingGuest = await getGuest(user.email);
+        const existingGuest = await getGuestAction(user.email!);
 
-        if (!existingGuest)
-          await createGuest({ email: user.email, fullName: user.name });
-
+        if (!existingGuest) {
+          const [firstName, lastName] = user.name!.split(" ");
+         
+          await CreateGuestAction({ email: user.email!, fullName: user.name!, firstName, lastName});
+        }
         return true;
       } catch (e) {
         return false;
       }
     },
-    async session({ session, user }) {
-      const guest = await getGuest(session.user.email);
+    async session({ session }) {
+      const guest = await getGuestAction(session.user.email);
       session.user.guestId = guest.id;
+      session.user.firstName = guest.firstName;
+      session.user.lastName = guest.lastName;
+      session.user.nationalID = guest.nationalID;
+      session.user.nationality = guest.nationality
+      session.user.countryFlag = guest.countryFlag
+
+
       return session;
     },
   },

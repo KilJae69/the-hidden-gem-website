@@ -1,8 +1,9 @@
 "use client";
-import { useState } from "react";
+import useTextExpandStore from "@/store/textExpandStore";
+
 
 function TextExpander({ children }: { children: string }) {
-  const [isExpanded, setIsExpanded] = useState(false);
+  const {isExpanded, setIsExpanded} = useTextExpandStore();
   const displayText = isExpanded
     ? children
     : children.split(" ").slice(0, 40).join(" ") + "...";
