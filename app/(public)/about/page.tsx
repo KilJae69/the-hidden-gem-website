@@ -48,6 +48,7 @@ const AboutPage = async () => {
           </div>
           <div className="mx-auto max-h-[500px] max-w-[500px] overflow-hidden rounded-lg border">
             <Image
+              placeholder="blur"
               src={aboutImage1}
               className="size-full  rounded-lg object-cover"
               alt="Family sitting around a fire pit in front of cabin"
@@ -64,6 +65,7 @@ const AboutPage = async () => {
         <div className="flex flex-col-reverse gap-10 lg:flex-row">
           <div className="mx-auto max-h-[500px] max-w-[500px] overflow-hidden rounded-md border">
             <Image
+              placeholder="blur"
               src={aboutImage2}
               className="size-full rounded-md  object-cover"
               alt="Family that manages The Wild Oasis"
